@@ -6,9 +6,8 @@ from django.shortcuts import render
 from django.template import loader
 from django.views.generic.edit import CreateView
 
-
-
 from books.models import Book
+
 
 class UserRegisterLogin(CreateView):
     template_name = 'registration/register.html'
@@ -24,6 +23,3 @@ class UserRegisterLogin(CreateView):
 @login_required
 def index(request):
     return render(request, 'books/index.html', {})
-
-
-
