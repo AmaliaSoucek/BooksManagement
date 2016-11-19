@@ -1,15 +1,16 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseRedirect
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from django.template import loader
-from django.views.generic.edit import CreateView
+from django.views.generic import DetailView, ListView
+from django.views.generic.edit import CreateView, UpdateView
 
-from books.models import Book
+from .models import Author, Book, BorrowingRequest
 
 
-class UserRegisterLogin(CreateView):
+class UserRegisterLogin(LoginRequiredMixin, CreateView):
     template_name = 'registration/register.html'
     form_class = UserCreationForm
     success_url = '/'
@@ -18,6 +19,22 @@ class UserRegisterLogin(CreateView):
         self.object = form.save()
         login(self.request, self.object)
         return HttpResponseRedirect(self.get_success_url())
+
+
+class AuthorListView(LoginRequiredMixin, ListView):
+    model = Author
+
+
+class AuthorCreateView(LoginRequiredMixin, CreateView):
+    model = Author
+    fields = ('first_name', 'last_name',)
+    success_url = '/authors'
+
+
+class AuthorUpdateView(LoginRequiredMixin, UpdateView):
+    model = Author
+    fields = ('first_name', 'last_name',)
+    success_url = '/authors'
 
 
 @login_required
