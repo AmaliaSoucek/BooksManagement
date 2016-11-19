@@ -23,7 +23,7 @@ class BorrowingRequest(models.Model):
                (APPROVED, u'approved'),
                (DECLINED, u'declined'))
 
-    book = models.ForeignKey(Book)
-    borrower = models.ForeignKey(User)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    borrower = models.ForeignKey(User, on_delete=models.CASCADE)
     status = models.PositiveSmallIntegerField(choices=CHOICES)
 
