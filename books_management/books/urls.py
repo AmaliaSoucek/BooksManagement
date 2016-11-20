@@ -7,7 +7,7 @@ from . import views
 
 
 urlpatterns = [
-    url(r'^/?$', views.BookListView.as_view()),
+    url(r'^$', views.BookListView.as_view()),
 
     url(r'register/?$', views.UserRegisterLogin.as_view()),
     url(r'^login/?$', auth.views.login),
