@@ -1,11 +1,13 @@
 {% extends 'base.html' %}
-{% load static %}
 
 {% block title %}Authors{% endblock %}
 
 {% block content %}
 <div class="jumbotron text-center">
-  <h1>Authors</h1>
+	<h1>Authors</h1> 
+	<a href="/authors/create/" class="btn btn-default">
+		<span class="glyphicon glyphicon-plus"></span> Add new author
+	</a>
 </div>
 
 <div class="container">
@@ -20,11 +22,6 @@
 	{% else %}
 		<div class="row well"><div class="col-md-12"><p>No authors are available.</p></div></div>
 	{% endif %}
-	<div class="row"><div class="col-md-12">
-		<a href="/authors/create/" class="btn btn-default btn-md">
-		    <span class="glyphicon glyphicon-plus-sign"></span> Add new author
-		</a>
-	</div></div>
 </div>
 {% endblock %}
 

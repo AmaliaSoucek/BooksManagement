@@ -7,7 +7,7 @@ from . import views
 
 
 urlpatterns = [
-    url(r'^$', views.BookListView.as_view()),
+    url(r'', views.BookListView.as_view()),
 
     url(r'register/?$', views.UserRegisterLogin.as_view()),
     url(r'^login/?$', auth.views.login),
@@ -28,4 +28,10 @@ urlpatterns = [
     url(r'^books/create/?$', views.BookCreateView.as_view()),
     url(r'^books/remove/(?P<pk>[0-9]+)/?$', views.BookDeleteView.as_view()),
     url(r'^books/owned?$', views.OwnedBookListView.as_view()),
+
+    url(r'^books/borrow/(?P<pk>[0-9]+)/?$', views.BorrowBook.as_view()),
+    url(r'^books/requests/?$', views.BorrowingRequestListView.as_view()),
+    url(r'^books/requests/mine?$', views.MyBorrowingRequestListView.as_view()),
+    url(r'^books/requests/(?P<pk>[0-9]+)/approve/?$', views.HandleRequest.as_view(), {'approve': True}),
+    url(r'^books/requests/(?P<pk>[0-9]+)/decline/?$', views.HandleRequest.as_view(), {'approve': False}),
 ]

@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="jumbotron text-center">
+  <h1>{{ title }}</h1>
+</div>
+
+<div class="container">
+	{% if borrowingrequest_list %}
+	    {% for borrowing_request in borrowingrequest_list %}
+	 	<div class="row well" style="font-size: 20px;">
+	    	<div class="col-md-3">
+	        	<a href="/books/{{ borrowing_request.book.id }}/">
+	        		{{ borrowing_request.book.title }}
+	        	</a>
+	        </div>
+	        <div class="col-md-3">
+	        	from: {{ borrowing_request.book.owner }}
+	        </div>
+	       	<div class="col-md-3">
+	        	to: {{ borrowing_request.borrower }}
+	        </div>
+	       	<div class="col-md-3" id="{{ borrowing_request.id }}">
+	       		{% if borrowing_request.is_pending and borrowing_request.book.owner == request.user %}
+	       			<a class="approve btn btn-default btn-md" pk="{{ borrowing_request.id }}">
+		       		        <span class="glyphicon glyphicon-thumbs-up"></span>
+		       		         Approve
+        			</a>
+
+		       		<a class="decline btn btn-default btn-md" pk="{{ borrowing_request.id }}">
+		       		        <span class="glyphicon glyphicon-thumbs-down"></span>
+		       		         Decline&nbsp;
+        			</a>
+        		{% else %}
+	            	{{ borrowing_request.get_status_display }}
+	        	{% endif %}
+	        </div>	
+        </div>	
+	    {% endfor %}
+	{% else %}
+		<div class="row well"><div class="col-md-12"><p>No request yet.</p></div></div>
+	{% endif %}
+</div>
+
+
+<script>
+    $(".approve, .decline").click(function(){
+    	var request_id = $(this).attr("pk");
+    	var action = $(this).hasClass('approve') ? '/approve': '/decline';
+    	var url = 'requests/' + request_id + action;
+        $.ajax({
+        	type: "POST",
+        	url: url, 
+        	data : { 'csrfmiddlewaretoken': '{{ csrf_token }}' },
+        	success: function(result){ 
+        		$("#" + request_id).text(result);
+        	},
+        	error: function(result){
+        		alert(result.responseText);
+        	},
+        });
+    });
+</script>
+{% endblock %}
+
+

@@ -15,6 +15,20 @@ class Book(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
 
+    @property
+    def is_borrowed(self):
+        return self.borrowingrequest_set.filter(
+            status=BorrowingRequest.APPROVED
+        ).exists()
+
+    def borrow(self, user):
+        if self.is_borrowed:
+            return False
+
+        BorrowingRequest.objects.create(
+            borrower=user, book=self, status=BorrowingRequest.PENDING)
+        return True
+
 
 class BorrowingRequest(models.Model):
 
@@ -30,3 +44,24 @@ class BorrowingRequest(models.Model):
     borrower = models.ForeignKey(User, on_delete=models.CASCADE)
     status = models.PositiveSmallIntegerField(choices=CHOICES)
 
+    def approve(self, user):
+        if self.status != self.PENDING:
+            return False
+
+        self.status = self.APPROVED
+        BorrowingRequest.objects.filter(
+            book=self.book).update(status=self.DECLINED)
+        self.save()
+        return True
+
+    def decline(self, user):
+        if self.status != self.PENDING:
+            return False
+
+        self.status = self.DECLINED
+        self.save()
+        return True
+
+    @property
+    def is_pending(self):
+        return self.status == self.PENDING

@@ -3,35 +3,70 @@
 
 {% block title %}{{ title }}{% endblock %}
 
+
 {% block content %}
 <div class="jumbotron text-center">
   <h1>{{ title }}</h1>
+  {% if show_add_book %}
+	<a href="/books/create/" class="btn btn-default">
+		<span class="glyphicon glyphicon-plus"></span> Add new book
+	</a>
+   {% endif %}
 </div>
 
 <div class="container">
+
 	{% if book_list %}
 	    {% for book in book_list %}
 	 	<div class="row well">
 	    	<div class="col-md-10">
 	        	<a style="font-size: 20px;" href="/books/{{ book.id }}/">{{ book.title }}</a>
 	        </div>
-	        <div class="col-md-2">		        
-	        	{% if book.owner == request.user %}
-		        	<a href="/books/remove/{{ book.id }}/" class="btn btn-default btn-md pull-right">
-		        		<span class="glyphicon glyphicon-trash"></span> Remove
-		        	</a>
-	    		{% endif %}
+	    	<div class="col-md-2" id="{{ book.id }}">  
+	    	{% if book.owner == request.user %}
+	        	<a href="/books/remove/{{ book.id }}/" class="btn btn-default btn-md pull-right">
+	        		<span class="glyphicon glyphicon-trash"></span> Remove
+	        	</a>
+	        {% elif book.requested %}
+	        	<p class="pull-right text-info"><span class="glyphicon glyphicon-book"></span> Requested </p>
+	        {% elif book.borrowed %}
+	        	<p  class="pull-right text-success"><span class="glyphicon glyphicon-book"></span> Borrowed </p>
+		    {% elif not book.is_already_borrowed %}
+	        	<a class="borrow btn btn-default btn-md pull-right" pk="{{ book.id }}">
+	        		<span class="glyphicon glyphicon-book"></span> Borrow
+	        	</a>
+	    	{% endif %}
 	    	</div>
         </div>	
 	    {% endfor %}
 	{% else %}
 		<div class="row well"><div class="col-md-12"><p>No books are available.</p></div></div>
 	{% endif %}
-	<div class="row"><div class="col-md-12">
-		<a href="/books/create/" class="btn btn-default btn-md">
-		    <span class="glyphicon glyphicon-plus-sign"></span> Add new book to collection
-		</a>
-	</div></div>
 </div>
+
+
+
+<script>
+    $(".borrow").click(function(){
+    	var book_id = $(this).attr("pk");
+    	var url = 'books/borrow/' + book_id;
+        $.ajax({
+        	type: "POST",
+        	url: url, 
+        	data : { 'csrfmiddlewaretoken': '{{ csrf_token }}' },
+        	success: function(result){ 
+        		$("#" + book_id).html(
+		    		"<p class='pull-right text-info'>" +
+		    		"<span class='glyphicon glyphicon-book'></span> " + 
+		    		"Requested </p>"
+		    		);
+        	},
+        	error: function(result){
+        		alert(result.responseText);
+        	},
+        });
+    });
+</script>
 {% endblock %}
+
 
