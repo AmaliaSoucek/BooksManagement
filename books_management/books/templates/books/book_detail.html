@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Book info</h2>
+	<form class="form-horizontal">
+		<div class="form-group well">
+			<p><label>Title:</label> {{ object.title }}</p>
+			<p><label>Author:</label> {{ object.author }}</p>
+			<p><label>Owner:</label> {{ object.owner }}</p>
+		</div>
+	</form>
+</div>
+{% endblock %}

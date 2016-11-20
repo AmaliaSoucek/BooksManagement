@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Confirm deletion{% endblock %}
+
+{% block content %}
+	<div class="alert alert-warning">
+		 <strong>Warning!</strong> Are you sure?
+	<div>
+		<br>
+		<form method="post">
+			{% csrf_token %}
+			<button class="btn btn-default btn-md" type="submit">Yes</button>
+		</form>
+	</div>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Authors{% endblock %}
+
+{% block content %}
+<div class="jumbotron text-center">
+  <h1>Authors</h1>
+</div>
+
+<div class="container">
+	{% if author_list %}
+	    {% for author in author_list %}
+	 	<div class="row well">
+	    	<div class="col-md-12">
+	        	<a style="font-size: 20px;" href="/authors/{{ author.id }}/">{{ author }}</a>
+	        </div>
+        </div>	
+	    {% endfor %}
+	{% else %}
+		<div class="row well"><div class="col-md-12"><p>No authors are available.</p></div></div>
+	{% endif %}
+	<div class="row"><div class="col-md-12">
+		<a href="/authors/create/" class="btn btn-default btn-md">
+		    <span class="glyphicon glyphicon-plus-sign"></span> Add new author
+		</a>
+	</div></div>
+</div>
+{% endblock %}
+
+
