@@ -55,7 +55,7 @@ class BorrowingRequest(models.Model):
         return True
 
     def decline(self, user):
-        if self.status != self.PENDING:
+        if not self.is_pending:
             return False
 
         self.status = self.DECLINED

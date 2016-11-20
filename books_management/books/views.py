@@ -54,10 +54,6 @@ class BookListView(LoginRequiredMixin, ListView):
     model = Book
 
     def get_queryset(self):
-
-        q = BorrowingRequest.objects.filter(
-            status=BorrowingRequest.APPROVED)
-
         return Book.objects.annotate(
             is_already_borrowed=models.Sum(models.Case(
                 models.When(
