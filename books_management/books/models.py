@@ -25,6 +25,12 @@ class Book(models.Model):
         if self.is_borrowed:
             return False
 
+        already_requested = self.borrowingrequest_set.filter(
+            status=BorrowingRequest.PENDING, borrower=user
+        ).exists()
+        if already_requested:
+            return False
+
         BorrowingRequest.objects.create(
             borrower=user, book=self, status=BorrowingRequest.PENDING)
         return True
@@ -45,12 +51,14 @@ class BorrowingRequest(models.Model):
     status = models.PositiveSmallIntegerField(choices=CHOICES)
 
     def approve(self, user):
-        if self.status != self.PENDING:
+        if not self.is_pending:
             return False
 
-        self.status = self.APPROVED
         BorrowingRequest.objects.filter(
-            book=self.book).update(status=self.DECLINED)
+            book=self.book
+        ).exclude(id=self.id).update(status=self.DECLINED)
+
+        self.status = self.APPROVED
         self.save()
         return True
 
